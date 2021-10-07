@@ -32,6 +32,9 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'foreman', '~> 0.87.2'
   gem 'rspec-rails', '~> 5.0', '>= 5.0.2'
+  gem 'factory_bot_rails', '~> 6.2'
+  gem 'rails-controller-testing', '~> 1.0', '>= 1.0.5'
+  gem 'faker', '~> 2.19'
 end
 
 group :development do
