@@ -1,0 +1,15 @@
+<div class="col-md-12">
+  <%= form_for @article do |f| %>
+    <%= f.label :title, "標題" %>  
+    <%= f.text_field :title %>
+    <%= f.label :body, "內文" %>
+    <%= f.text_area :body %>
+    <%= f.label :categories, "分類" %>
+    <%= f.text_field :categories %>
+    <%= f.label :tag, "標籤" %>
+    <%= f.text_field :tag %>
+    <div class="form-actions">
+       <%= f.submit "Submit", :disable_with => 'Submiting...', :class => "btn btn-primary"%>
+    </div>
+  <% end %>
+</div>
