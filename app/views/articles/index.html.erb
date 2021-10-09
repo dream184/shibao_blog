@@ -1,6 +1,6 @@
 <div class="col-md-12">
   <div class="course">
-    <%= link_to("New course", new_article_path , :class => "btn pull-right") %>
+    <%= link_to("New article", new_article_path , :class => "btn pull-right") %>
   </div>
   <table class="table">
     <thead>
@@ -16,7 +16,7 @@
       <tr>
         <td>#</td>
         <td><%= link_to(article.title, article_path(article)) %></td>
-        <td><%= course.description %></td>
+        <td><%= article.body %></td>
         <td>
           <%= link_to("Edit", edit_article_path(article), :class => "btn btn-xs") %>
           <%= link_to("Delete", article_path(article), :class => "btn btn-xs", :method => :delete, :data => { :confirm => "Are you sure?" } ) %>

@@ -58,59 +58,135 @@ RSpec.describe ArticlesController, type: :controller do
   end
 
   describe "POST create" do 
-    it "create a new article" do
-      article = FactoryBot.build(:article)
 
-      expect do 
-        post :create, params: { :article => FactoryBot.attributes_for(:article) }
-      end.to change{ Article.count }.by(1)
-    end
+    context "when article doesn't have a title" do
+      it "doesn't create a record" do 
+        expect do 
+          post :create, params: { article: { :body => "bar" } }
+        end.to change { Article.count }.by(0) 
+      end
 
-    it "redirects to articles_path" do
-      article = FactoryBot.build(:article)
-
-      post :create, params: { :article => FactoryBot.attributes_for(:article) }
-
-      expect(response).to redirect_to articles_path
-    end
-
-    # 如果沒打標題，則不能儲存
-    it "doesn't create a record when article doesn't have a title" do 
-      expect do 
+      it "render new template" do
         post :create, params: { article: { :body => "bar" } }
-      end.to change { Article.count }.by(0) 
+
+        expect(response).to render_template("new")
+      end
     end
 
-    it "render new template when article doesn't have title" do
-      post :create, params: { article: { :body => "bar" } }
+    context "when article have a title" do 
+      it "create a new article record when article has title" do
+        article = FactoryBot.build(:article)
 
-      expect(response).to render_template("new")
-    end
+        expect do
+          post :create, params: { article: FactoryBot.attributes_for(:article) }
+        end.to change { Article.count }.by(1)
+      end
 
-    it "create a new article record when article has title" do
-      article = FactoryBot.build(:article)
+      it "redirects to articles_path" do 
+        article = FactoryBot.build(:article)
 
-      expect do
         post :create, params: { article: FactoryBot.attributes_for(:article) }
-      end.to change { Article.count }.by(1)
+
+        expect(response).to redirect_to articles_path
+      end
     end
-
-    it "redirects to articles_path when article has title" do 
-      article = FactoryBot.build(:article)
-
-      post :create, params: { article: FactoryBot.attributes_for(:article) }
-
-      expect(response).to redirect_to articles_path
-    end
-
-    
 
 
   end
 
+  describe "GET edit" do 
+    it "assign article" do 
+      article = FactoryBot.create(:article)
+
+      get :edit, params: { id: article.id }
+
+      expect(assigns[:article]).to eq(article)
+    end
+
+    it "render template" do
+      article = FactoryBot.create(:article)
+
+      get :edit, params: { id: article.id }
+
+      expect(response).to render_template("edit")
+    end
+  end
+
+  describe "PUT update" do
+    context "when article has title" do
+      it "assign @article" do 
+        article = FactoryBot.create(:article)
+
+        put :update, params: { id: article.id, article: { title: "title", body: "xxxzzz", categories: "astrocamp", tag: "rails"} }
+
+        expect(assigns[:article]).to eq(article)
+      end
+
+      it "changes value" do
+        article = FactoryBot.create(:article)
+        
+        put :update, params: { id: article.id, article: { title: "title", body: "xxxzzz", categories: "astrocamp", tag: "rails"} }
+
+        expect(assigns[:article].title).to eq("title")
+        expect(assigns[:article].body).to eq("xxxzzz")
+      end
+
+      it "redirects to article_path" do 
+        article = FactoryBot.create(:article)
+
+        put :update, params: { id: article.id, article: { title: "title", body: "xxxzzz", categories: "astrocamp", tag: "rails"} }
+
+        expect(response).to redirect_to article_path(article)
+      end
+    end
+
+    context "when article doesn't have title" do
+      it "doesn't update a record" do
+        article = FactoryBot.create(:article)
+
+        put :update, params: { id: article.id, article: { title: "", body: "xxxzzz"} }
+
+        expect(article.body).not_to eq("xxxzzz")
+      end
+
+      it "renders edit template" do 
+        article = FactoryBot.create(:article)
+
+        put :update, params: { id: article.id, article: { title: "", body: "xxxzzz"} }
+
+        expect(response).to render_template("edit")
+      end
+    end
 
 
 
+
+
+  end
+
+  describe "DELETE destroy" do 
+    it "assigns @article" do 
+      article = FactoryBot.create(:article)
+
+      delete :destroy, params: { id: article.id }
+
+      expect(assigns[:article]).to eq(article)
+    end
+
+    it "delete a record" do 
+      article = FactoryBot.create(:article)
+
+      expect { delete :destroy, params: { id: article.id } }.to change { Article.count }.by(-1)
+    end
+
+    it "redirects to articles_path" do
+      article = FactoryBot.create(:article)
+
+      delete :destroy, params: { id: article.id }
+
+      expect(response).to redirect_to articles_path
+    end
+  end
 
 
 end
